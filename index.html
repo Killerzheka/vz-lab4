@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Діагональна орбіта Місяця</title>
+
+    <style>
+        /* -------------- БАЗА + тло ----------------------------------- */
+        html,body{
+            margin:0; padding:0; overflow:hidden;
+            background:#000 url(images/cosmos.jpg) center/cover no-repeat;
+            font-size:0;
+        }
+        /* додали перспективу, щоби rotateX виглядав «обʼємно» */
+        .scene{
+            position:relative;
+            width:100vw; height:100vh;
+            perspective:1200px;               /* грайте 800‑1500 — міняє «глибину» */
+        }
+
+        /* -------------- Земля ---------------------------------------- */
+        #earth{
+            position:absolute;
+            top:50%; left:50%;
+            width:380px;                      /* ваш PNG */
+            transform:translate(-50%,-50%);
+            z-index:1;
+            animation:spin 30s linear infinite;
+        }
+
+        /* -------------- Нахил орбіти --------------------------------- */
+        .tilt{
+            position:absolute;
+            top:50%; left:50%;
+            width:700px; height:700px;        /* діаметр орбіти */
+            transform-style:preserve-3d;
+            /* спершу центруємо, потім Н А Х И Л Я Є М О   */
+            transform:
+                    translate(-50%,-50%)          /* центр у Землю */
+                    rotateX(60deg)                /* «завал» уперед/назад */
+                    rotateZ(-30deg);              /* поворот навколо Z, дає діагональ */
+        }
+
+        /* -------------- «Ринг», що крутиться ------------------------- */
+        .ring{
+            position:absolute;
+            inset:0;                          /* розтягуємо на весь .tilt */
+            animation:revolve 6s linear infinite;
+            transform-style:preserve-3d;
+        }
+
+        /* -------------- Місяць --------------------------------------- */
+        #moon{
+            position:absolute;
+            top:-55px; left:50%;              /* точка старту — «за» Землею зверху */
+            width:110px;
+            transform:translate(-50%);
+            animation:depth 6s linear infinite;
+        }
+
+        @keyframes revolve{
+            to{ transform:rotateZ(360deg); }  /* крутимо ринг у власній площині */
+        }
+
+        /* «перед/за» + ефект наближення/віддалення */
+        @keyframes depth{
+            0%,100%{ transform:translate(-50%) scale(.8);  z-index:0; }
+            25%    { transform:translate(-50%) scale(1.0); z-index:2; }
+            50%    { transform:translate(-50%) scale(1.2); z-index:2; }
+            75%    { transform:translate(-50%) scale(1.0); z-index:0; }
+        }
+
+        /* --- обертання самої Землі ------------------------------ */
+        @keyframes spin{
+            to{ transform:translate(-50%,-50%) rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+<div class="scene">
+    <img id="earth" src="images/earth.png" alt="Earth">
+    <div class="tilt">
+        <div class="ring">
+            <img id="moon" src="images/moon.png" alt="Moon">
+        </div>
+    </div>
+</div>
+</body>
+</html>
